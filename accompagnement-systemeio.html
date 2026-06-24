@@ -1,0 +1,844 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300..700&display=swap');
+
+/* ── Design tokens scoped — pas de pollution Systeme.io ── */
+.acc {
+  --bg:          oklch(0.972 0.005 75);
+  --fg:          oklch(0.18 0.012 55);
+  --card:        oklch(1 0 0);
+  --primary:     oklch(0.508 0.158 47);
+  --primary-fg:  oklch(0.99 0.003 75);
+  --muted:       oklch(0.50 0.012 55);
+  --border:      oklch(0.895 0.006 75);
+  --shadow-card: 0 1px 3px 0 oklch(0.18 0.012 55 / 0.04),
+                 0 8px 24px -8px oklch(0.18 0.012 55 / 0.06);
+  --serif:       "Playfair Display", Georgia, "Times New Roman", serif;
+  --sans:        "Inter", system-ui, -apple-system, sans-serif;
+  --r4xl:        2rem;
+  --rfull:       9999px;
+  --ease:        cubic-bezier(0.2, 0, 0, 1);
+
+  font-family:  var(--sans);
+  color:        var(--fg);
+  background:   var(--bg);
+  overflow:     hidden;
+  color-scheme: light;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.acc *, .acc *::before, .acc *::after { box-sizing: border-box; }
+.acc p  { margin: 0; }
+.acc h1, .acc h2, .acc h3 { margin: 0; }
+.acc a  { text-decoration: none; }
+.acc button { font-family: var(--sans); background: none; border: none; cursor: pointer; padding: 0; color: inherit; }
+
+/* ── Layout column ── */
+.acc-wrap { display: flex; flex-direction: column; }
+
+/* ════════════════════════════════════
+   HERO
+   ════════════════════════════════════ */
+.acc-hero {
+  padding: 80px 72px 0;
+  display: flex;
+  gap: 56px;
+  align-items: center;
+}
+.acc-hero-col {
+  flex: 1.05;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.acc-hero-col h1 {
+  font-family: var(--serif);
+  font-size: 54px;
+  line-height: 1.04;
+  font-weight: 500;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+}
+.acc-hero-col h1 em { font-style: italic; color: var(--primary); }
+.acc-hero-col .lead {
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--muted);
+  max-width: 46ch;
+}
+.acc-hero-col .tagline {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 27px;
+  line-height: 1.32;
+  color: var(--fg);
+}
+.acc-hero-col .cta-text { font-size: 17px; line-height: 1.65; color: var(--muted); max-width: 46ch; }
+.acc-hero-col .cta-text strong { color: var(--fg); font-weight: 600; }
+
+/* Hero card */
+.acc-hero-card {
+  flex: 0.95;
+  background: var(--card);
+  border-radius: var(--r4xl);
+  box-shadow: var(--shadow-card);
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+.acc-counter {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+}
+.acc-counter-num {
+  font-family: var(--serif);
+  font-size: 96px;
+  line-height: 0.85;
+  font-weight: 500;
+  color: var(--primary);
+  letter-spacing: -0.03em;
+}
+.acc-counter-denom {
+  font-family: var(--serif);
+  font-size: 54px;
+  font-weight: 500;
+  color: var(--primary);
+  opacity: .45;
+}
+.acc-battery-wrap { display: flex; align-items: center; gap: 6px; }
+.acc-battery-body {
+  position: relative;
+  width: 300px;
+  height: 64px;
+  border: 3px solid var(--primary);
+  border-radius: 20px;
+  padding: 7px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.acc-battery-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 11px;
+  width: 8%;
+  transition: width 1.5s var(--ease);
+  flex-shrink: 0;
+}
+.acc-battery-fill svg { flex-shrink: 0; }
+.acc-battery-tip {
+  width: 8px;
+  height: 24px;
+  background: var(--primary);
+  border-radius: 0 5px 5px 0;
+  flex-shrink: 0;
+}
+.acc-card-desc {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.acc-card-desc .energy-title {
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 500;
+}
+.acc-card-desc .energy-body {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 34ch;
+}
+
+/* ════════════════════════════════════
+   GARANTIE
+   ════════════════════════════════════ */
+.acc-garantie { padding: 48px 72px 0; }
+.acc-garantie-inner {
+  background: color-mix(in oklch, var(--primary) 7%, var(--bg));
+  border-radius: var(--r4xl);
+  padding: 34px 38px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+.acc-garantie-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--primary-fg);
+  flex-shrink: 0;
+}
+.acc-garantie-text { display: flex; flex-direction: column; gap: 8px; }
+.acc-garantie-label {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--primary);
+}
+.acc-garantie-body { font-size: 17px; line-height: 1.6; }
+.acc-garantie-body strong { font-weight: 600; }
+
+/* ════════════════════════════════════
+   TÉMOIGNAGES
+   ════════════════════════════════════ */
+.acc-temo {
+  margin-top: 64px;
+  background: var(--fg);
+  padding: 60px 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 24px;
+}
+.acc-temo-names {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.acc-temo-name {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 42px;
+  font-weight: 500;
+  color: var(--primary);
+}
+.acc-temo-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--bg) 40%, transparent);
+  align-self: center;
+}
+.acc-temo-sub {
+  font-family: var(--serif);
+  font-size: 26px;
+  line-height: 1.3;
+  font-weight: 500;
+  color: var(--bg);
+  max-width: 24ch;
+}
+.acc-temo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 14px 28px;
+  border-radius: var(--rfull);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 15.5px;
+  font-weight: 600;
+  transition: color .2s;
+}
+.acc-temo-link:hover { color: var(--primary); }
+
+/* ════════════════════════════════════
+   BLOC 2 — 1% chaque jour
+   ════════════════════════════════════ */
+.acc-progress {
+  padding: 72px 72px 0;
+  display: flex;
+  gap: 56px;
+  align-items: center;
+}
+.acc-progress-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.acc-progress-text h2 {
+  font-family: var(--serif);
+  font-size: 38px;
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: -0.018em;
+}
+.acc-progress-text p { font-size: 17px; line-height: 1.65; }
+.acc-progress-text .muted { color: var(--muted); }
+.acc-progress-text em { font-family: var(--serif); font-style: italic; color: var(--fg); }
+.acc-progress-text .accent { color: var(--primary); font-weight: 600; }
+.acc-progress-text .bold { color: var(--fg); font-weight: 600; }
+
+.acc-steps-wrap { flex: 0.8; }
+.acc-steps-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 24px;
+  background: var(--card);
+  border-radius: var(--r4xl);
+  box-shadow: var(--shadow-card);
+  height: 160px;
+}
+.acc-step-bar {
+  flex: 1;
+  border-radius: 999px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .5s var(--ease), transform .5s var(--ease);
+}
+.acc-steps-chart.visible .acc-step-bar {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ════════════════════════════════════
+   BLOC 3 — Features
+   ════════════════════════════════════ */
+.acc-features {
+  padding: 80px 72px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.acc-features-hd { display: flex; flex-direction: column; gap: 10px; max-width: 60ch; }
+.acc-features-hd h2 {
+  font-family: var(--serif);
+  font-size: 38px;
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: -0.018em;
+}
+.acc-features-hd p { font-size: 17px; line-height: 1.65; color: var(--muted); }
+.acc-features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+.acc-feature-card {
+  background: var(--card);
+  border-radius: var(--r4xl);
+  box-shadow: var(--shadow-card);
+  padding: 30px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.acc-feature-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1.5px solid var(--primary);
+  color: var(--primary);
+  flex-shrink: 0;
+}
+.acc-feature-body h3 {
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+.acc-feature-body p {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* ════════════════════════════════════
+   FAQ
+   ════════════════════════════════════ */
+.acc-faq {
+  padding: 80px 72px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.acc-faq-inner { width: 100%; max-width: 760px; }
+.acc-faq-inner > h2 {
+  font-family: var(--serif);
+  font-size: 38px;
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: -0.018em;
+  text-align: center;
+  margin-bottom: 18px;
+}
+.acc-faq-item { border-top: 1px solid var(--border); }
+.acc-faq-item:last-of-type { border-bottom: 1px solid var(--border); }
+.acc .acc-faq-btn {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 38px 0;
+  text-align: left;
+}
+.acc-faq-q {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.32;
+}
+.acc-faq-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  flex-shrink: 0;
+  transition: transform 240ms var(--ease);
+}
+.acc-faq-item.open .acc-faq-chevron { transform: rotate(45deg); }
+.acc-faq-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 260ms var(--ease);
+}
+.acc-faq-item.open .acc-faq-panel { grid-template-rows: 1fr; }
+.acc-faq-panel-in { overflow: hidden; }
+.acc-faq-panel p {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--muted);
+  padding: 0 40px 22px 0;
+}
+
+/* ════════════════════════════════════
+   CTA FINAL
+   ════════════════════════════════════ */
+.acc-cta {
+  margin-top: 80px;
+  background: var(--fg);
+  padding: 72px;
+  display: flex;
+  gap: 56px;
+  align-items: center;
+}
+.acc-cta-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.acc-cta-col h2 {
+  font-family: var(--serif);
+  font-size: 40px;
+  line-height: 1.08;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--bg);
+}
+.acc-cta-col h2 em { font-style: italic; color: var(--primary); }
+.acc-cta-btn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  padding: 19px 34px;
+  border-radius: var(--rfull);
+  background: var(--primary);
+  color: var(--primary-fg);
+  font-size: 17px;
+  font-weight: 600;
+  transition: opacity .2s;
+}
+.acc-cta-btn:hover { opacity: .9; }
+.acc-cta-right {
+  flex: 0.7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.acc-cta-battery-wrap { display: flex; align-items: center; gap: 6px; }
+.acc-cta-battery-body {
+  position: relative;
+  width: 260px;
+  height: 60px;
+  border: 3px solid var(--primary);
+  border-radius: 18px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.acc-cta-battery-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 11px;
+  width: 8%;
+  transition: width 1.5s var(--ease);
+  flex-shrink: 0;
+}
+.acc-cta-battery-tip {
+  width: 7px;
+  height: 22px;
+  background: var(--primary);
+  border-radius: 0 5px 5px 0;
+  flex-shrink: 0;
+}
+.acc-cta-caption {
+  font-size: 14px;
+  color: color-mix(in oklch, var(--bg) 65%, transparent);
+}
+
+/* ════════════════════════════════════
+   RESPONSIVE — Mobile ≤ 768px
+   ════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Hero */
+  .acc-hero { padding: 48px 26px 0; flex-direction: column; gap: 22px; }
+  .acc-hero-col { flex: none; }
+  .acc-hero-col h1 { font-size: 34px; letter-spacing: -0.02em; }
+  .acc-hero-col .lead { font-size: 15px; max-width: none; }
+  .acc-hero-col .tagline { font-size: 21px; line-height: 1.35; }
+  .acc-hero-col .cta-text { font-size: 15px; max-width: none; }
+  .acc-hero-card { flex: none; width: 100%; padding: 28px 22px; gap: 18px; }
+  .acc-counter-num { font-size: 68px; }
+  .acc-counter-denom { font-size: 40px; }
+  .acc-battery-body { width: 224px; height: 54px; border: 2.5px solid var(--primary); border-radius: 16px; padding: 6px; }
+  .acc-battery-fill { border-radius: 9px; padding-right: 9px; }
+  .acc-battery-tip { width: 6px; height: 20px; border-radius: 0 4px 4px 0; }
+  .acc-card-desc .energy-title { font-size: 19px; }
+  .acc-card-desc .energy-body { font-size: 13.5px; }
+
+  /* Garantie */
+  .acc-garantie { padding: 24px 26px 0; }
+  .acc-garantie-inner { padding: 24px 22px; flex-direction: column; gap: 12px; }
+  .acc-garantie-icon { width: 38px; height: 38px; }
+  .acc-garantie-body { font-size: 15px; }
+
+  /* Témoignages */
+  .acc-temo { margin-top: 48px; padding: 44px 26px; gap: 18px; }
+  .acc-temo-names { flex-direction: column; gap: 2px; }
+  .acc-temo-name { font-size: 32px; line-height: 1.15; }
+  .acc-temo-dot { display: none; }
+  .acc-temo-sub { font-size: 21px; }
+  .acc-temo-link { font-size: 15px; padding: 13px 24px; gap: 8px; }
+
+  /* Bloc 2 */
+  .acc-progress { padding: 48px 26px 0; flex-direction: column; gap: 18px; }
+  .acc-progress-text h2 { font-size: 27px; }
+  .acc-progress-text p { font-size: 15px; }
+  .acc-steps-wrap { width: 100%; }
+  .acc-steps-chart { height: 120px; gap: 6px; padding: 14px 0; background: none; box-shadow: none; border-radius: 0; }
+
+  /* Features */
+  .acc-features { padding: 48px 26px 0; gap: 18px; }
+  .acc-features-hd h2 { font-size: 27px; }
+  .acc-features-hd p { font-size: 15px; margin-bottom: 4px; }
+  .acc-features-grid { grid-template-columns: 1fr; gap: 14px; }
+  .acc-feature-card { flex-direction: row; padding: 24px; gap: 15px; }
+  .acc-feature-icon { width: 44px; height: 44px; }
+  .acc-feature-body h3 { font-size: 18px; margin-bottom: 7px; }
+  .acc-feature-body p { font-size: 14px; }
+
+  /* FAQ */
+  .acc-faq { padding: 48px 26px 0; }
+  .acc-faq-inner > h2 { font-size: 27px; margin-bottom: 14px; }
+  .acc-faq-q { font-size: 17px; line-height: 1.35; }
+  .acc .acc-faq-btn { padding: 24px 0; gap: 16px; }
+  .acc-faq-panel p { font-size: 14px; line-height: 1.62; padding: 0 30px 18px 0; }
+
+  /* CTA */
+  .acc-cta {
+    margin-top: 48px;
+    padding: 48px 26px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 24px;
+  }
+  .acc-cta-col { flex: none; }
+  .acc-cta-col h2 { font-size: 27px; line-height: 1.12; letter-spacing: -0.018em; }
+  .acc-cta-btn { align-self: stretch; font-size: 16px; padding: 17px 28px; gap: 10px; }
+  .acc-cta-right { flex: none; width: 100%; }
+  .acc-cta-battery-body { width: 200px; height: 50px; border: 2.5px solid var(--primary); border-radius: 15px; padding: 5px; }
+  .acc-cta-battery-fill { border-radius: 9px; }
+  .acc-cta-battery-tip { width: 6px; height: 18px; border-radius: 0 4px 4px 0; }
+  .acc-cta-caption { font-size: 13px; }
+}
+</style>
+
+<!-- ═══════════ HTML FRAGMENT ═══════════ -->
+<div class="acc">
+  <div class="acc-wrap">
+
+    <!-- ── HERO ── -->
+    <section class="acc-hero">
+      <div class="acc-hero-col">
+        <h1>Tu te souviens de la dernière fois où tu t'es levée <em>en forme</em>&nbsp;?</h1>
+        <p class="lead">Tu donnes. Tu gères. Tu tiens. Pour tout le monde. Jusqu'au jour où il ne reste plus rien pour toi.</p>
+        <p class="tagline">Et si le mode survie, c'était fini&nbsp;?</p>
+        <p class="cta-text">L'objectif n'est pas d'être parfaite. C'est de retrouver ta <strong>pile électrique d'avant.</strong></p>
+      </div>
+
+      <div class="acc-hero-card">
+        <div class="acc-counter" data-anim="counter" data-target="8">
+          <span class="acc-counter-num">0</span>
+          <span class="acc-counter-denom">/10</span>
+        </div>
+        <div class="acc-battery-wrap">
+          <div class="acc-battery-body" data-anim="battery-hero">
+            <div class="acc-battery-fill" data-fill="80%">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary-fg)"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline></svg>
+            </div>
+          </div>
+          <div class="acc-battery-tip"></div>
+        </div>
+        <div class="acc-card-desc">
+          <p class="energy-title">8/10 d'énergie minimum.</p>
+          <p class="energy-body">C'est le résultat obtenu avec ma méthode. 8/10, c'est se réveiller avec le sourire, avoir encore de l'énergie le soir, et être vraiment là pour les gens qui comptent.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── GARANTIE ── -->
+    <section class="acc-garantie">
+      <div class="acc-garantie-inner">
+        <span class="acc-garantie-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg>
+        </span>
+        <div class="acc-garantie-text">
+          <span class="acc-garantie-label">La garantie</span>
+          <p class="acc-garantie-body">On ne s'arrête pas tant que tu n'as pas atteint 8/10 d'énergie. Tu suis la méthode et tu n'y arrives pas&nbsp;? Je prolonge. <strong>Sans discussion. Sans surcoût.</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TÉMOIGNAGES ── -->
+    <section class="acc-temo">
+      <div class="acc-temo-names">
+        <span class="acc-temo-name">Céline</span>
+        <span class="acc-temo-dot"></span>
+        <span class="acc-temo-name">Claire</span>
+        <span class="acc-temo-dot"></span>
+        <span class="acc-temo-name">Audrey</span>
+      </div>
+      <p class="acc-temo-sub">Elles aussi pensaient que c'était plus possible.</p>
+      <a href="https://www.gautiergerez.fr/blog/etude-de-cas" target="_blank" rel="noopener" class="acc-temo-link">
+        Regarder leurs histoires
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg>
+      </a>
+    </section>
+
+    <!-- ── BLOC 2 : 1% chaque jour ── -->
+    <section class="acc-progress">
+      <div class="acc-progress-text">
+        <h2>Pas de réveil à 5h.<br>Pas de smoothie aux épinards.</h2>
+        <p class="muted">Tu as déjà assez donné. Cette fois, ça commence doucement. <em>Quelques minutes par jour. Vraiment.</em></p>
+        <p class="muted">Un petit pas. Puis un autre. On avance de <span class="accent">1% chaque jour</span>, pas d'un coup. Parce que les grandes réformes de vie, ça tient rarement. Ce qui change une vie pour de bon, ce sont les petits gestes qu'on répète.</p>
+        <p class="bold">Jusqu'au jour où tu te retournes — et tu réalises que tout a changé.</p>
+      </div>
+      <div class="acc-steps-wrap">
+        <div class="acc-steps-chart" data-anim="steps">
+          <div class="acc-step-bar" style="height:16px; background:color-mix(in oklch, var(--primary) 24%, transparent); transition-delay:0s"></div>
+          <div class="acc-step-bar" style="height:24px; background:color-mix(in oklch, var(--primary) 36%, transparent); transition-delay:.1s"></div>
+          <div class="acc-step-bar" style="height:34px; background:color-mix(in oklch, var(--primary) 48%, transparent); transition-delay:.2s"></div>
+          <div class="acc-step-bar" style="height:46px; background:color-mix(in oklch, var(--primary) 60%, transparent); transition-delay:.3s"></div>
+          <div class="acc-step-bar" style="height:60px; background:color-mix(in oklch, var(--primary) 72%, transparent); transition-delay:.4s"></div>
+          <div class="acc-step-bar" style="height:76px; background:var(--primary); transition-delay:.5s"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── BLOC 3 : Features ── -->
+    <section class="acc-features">
+      <div class="acc-features-hd">
+        <h2>Comment ça se passe concrètement</h2>
+        <p>On part de toi. Pas d'une méthode générique que t'as déjà vue ailleurs.</p>
+      </div>
+      <div class="acc-features-grid">
+        <div class="acc-feature-card">
+          <span class="acc-feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+          </span>
+          <div class="acc-feature-body">
+            <h3>Des coachings ultra-personnalisés</h3>
+            <p>À chaque session, on part de là où tu en es, on mesure ta progression. On décide ensemble des prochaines actions que tu peux vraiment tenir. Je suis là entre les sessions aussi. Tu ne seras jamais livrée à toi-même.</p>
+          </div>
+        </div>
+        <div class="acc-feature-card">
+          <span class="acc-feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+          </span>
+          <div class="acc-feature-body">
+            <h3>Des outils simples, concrets, efficaces</h3>
+            <p>Les 20% d'actions qui donnent 80% des résultats. Rien de superflu. Rien que tu n'auras pas la force de faire. Tout est fait pour te rendre la vie facile et agréable.</p>
+          </div>
+        </div>
+        <div class="acc-feature-card">
+          <span class="acc-feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </span>
+          <div class="acc-feature-body">
+            <h3>Une communauté de femmes qui savent</h3>
+            <p>Des femmes qui se sont aussi oubliées pour les autres. Qui ont aussi entendu « mais t'as l'air bien pourtant. » Qui ont aussi eu honte de leur fatigue. Ici, pas besoin d'expliquer. Elles savent.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="acc-faq">
+      <div class="acc-faq-inner">
+        <h2>Vos questions</h2>
+
+        <div class="acc-faq-item">
+          <button type="button" class="acc-faq-btn" aria-expanded="false">
+            <span class="acc-faq-q">Ça demande vraiment peu de temps&nbsp;?</span>
+            <span class="acc-faq-chevron"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></span>
+          </button>
+          <div class="acc-faq-panel"><div class="acc-faq-panel-in"><p>On commence par quelques minutes. C'est tout. On n'augmente que quand tu es prête, et seulement si tu le veux. La méthode des petits pas, c'est pas une façon de parler.</p></div></div>
+        </div>
+
+        <div class="acc-faq-item">
+          <button type="button" class="acc-faq-btn" aria-expanded="false">
+            <span class="acc-faq-q">Comment se passent les coachings&nbsp;?</span>
+            <span class="acc-faq-chevron"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></span>
+          </button>
+          <div class="acc-faq-panel"><div class="acc-faq-panel-in"><p>En ligne, avec moi. À chaque session, on part de là où tu en es et on décide ensemble des prochaines actions concrètes. Je suis aussi disponible entre les sessions. Tu ne seras jamais livrée à toi-même.</p></div></div>
+        </div>
+
+        <div class="acc-faq-item">
+          <button type="button" class="acc-faq-btn" aria-expanded="false">
+            <span class="acc-faq-q">Quelles actions concrètement pour monter l'énergie&nbsp;?</span>
+            <span class="acc-faq-chevron"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></span>
+          </button>
+          <div class="acc-faq-panel"><div class="acc-faq-panel-in"><p>Ça dépend de toi. Je personnalise selon ton fonctionnement, ta vie, ton rythme. Je n'impose rien. Je propose, on met en place ensemble, on regarde les résultats. Si quelque chose ne marche pas pour toi, on ajuste.</p></div></div>
+        </div>
+
+        <div class="acc-faq-item">
+          <button type="button" class="acc-faq-btn" aria-expanded="false">
+            <span class="acc-faq-q">J'ai déjà tout essayé. Le sport, les compléments, le repos…</span>
+            <span class="acc-faq-chevron"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></span>
+          </button>
+          <div class="acc-faq-panel"><div class="acc-faq-panel-in"><p>Je sais. Ce que tu as essayé avant t'a peut-être aidée un temps, mais la fatigue est revenue. Ici, on ne traite pas les symptômes. On cherche ce qui te vide, et on travaille là-dessus.</p></div></div>
+        </div>
+
+        <div class="acc-faq-item">
+          <button type="button" class="acc-faq-btn" aria-expanded="false">
+            <span class="acc-faq-q">Est-ce que ça va marcher pour moi&nbsp;?</span>
+            <span class="acc-faq-chevron"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></span>
+          </button>
+          <div class="acc-faq-panel"><div class="acc-faq-panel-in"><p>C'est la question que se posent toutes les femmes avant de commencer. C'est pour ça qu'on mesure chaque jour. Si quelque chose ne fonctionne pas, on le voit rapidement et on ajuste. Tu sais exactement où tu en es.</p></div></div>
+        </div>
+
+        <div class="acc-faq-item">
+          <button type="button" class="acc-faq-btn" aria-expanded="false">
+            <span class="acc-faq-q">Est-ce que je vais tenir jusqu'au bout&nbsp;?</span>
+            <span class="acc-faq-chevron"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></span>
+          </button>
+          <div class="acc-faq-panel"><div class="acc-faq-panel-in"><p>On commence si petit que tu vas te dire « c'est vraiment ça ? ». Et quand tu vois tes premiers résultats, tu ne veux plus t'arrêter. Si tu traverses un creux, la communauté est là, des femmes qui ont exactement vécu ce que tu vis.</p></div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── CTA FINAL ── -->
+    <section class="acc-cta">
+      <div class="acc-cta-col">
+        <h2>Comment fonctionne mon énergie&nbsp;?<br><em>Guide de A à Z.</em></h2>
+        <a href="https://www.gautiergerez.fr/fr-site" target="_blank" rel="noopener" class="acc-cta-btn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon></svg>
+          Regarder la formation gratuite
+        </a>
+      </div>
+      <div class="acc-cta-right">
+        <div class="acc-cta-battery-wrap">
+          <div class="acc-cta-battery-body" data-anim="battery-cta">
+            <div class="acc-cta-battery-fill" data-fill="92%">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary-fg)"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline></svg>
+            </div>
+          </div>
+          <div class="acc-cta-battery-tip"></div>
+        </div>
+        <span class="acc-cta-caption">Recharge ton énergie, un pas à la fois.</span>
+      </div>
+    </section>
+
+  </div><!-- /.acc-wrap -->
+</div><!-- /.acc -->
+
+<script>
+(function () {
+  'use strict';
+
+  // ── FAQ accordion ──────────────────────────────────────────────────────
+  document.querySelectorAll('.acc-faq-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var item = btn.closest('.acc-faq-item');
+      var isOpen = item.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  });
+
+  // ── IntersectionObserver animations ───────────────────────────────────
+  var seen = {};
+  var EASE = 'cubic-bezier(0.2,0,0,1)';
+
+  function animateCounter(el) {
+    var target = parseInt(el.getAttribute('data-target'), 10);
+    var numEl  = el.querySelector('.acc-counter-num');
+    var dur = 1100, start = performance.now();
+    function tick(now) {
+      var p      = Math.min(1, (now - start) / dur);
+      var eased  = 1 - Math.pow(1 - p, 3);
+      numEl.textContent = Math.round(eased * target);
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function animateBatteryInside(bodyEl) {
+    var fillEl = bodyEl.querySelector('[data-fill]');
+    if (!fillEl) return;
+    var targetWidth = fillEl.getAttribute('data-fill');
+    // tiny frame delay so transition fires
+    requestAnimationFrame(function () {
+      fillEl.style.width = targetWidth;
+    });
+  }
+
+  function animateSteps(chartEl) {
+    chartEl.classList.add('visible');
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var el  = e.target;
+      var id  = el.getAttribute('data-anim');
+      if (!id || seen[id]) return;
+      seen[id] = true;
+      if (id === 'counter')      animateCounter(el);
+      if (id === 'battery-hero') animateBatteryInside(el);
+      if (id === 'battery-cta')  animateBatteryInside(el);
+      if (id === 'steps')        animateSteps(el);
+      io.unobserve(el);
+    });
+  }, { threshold: 0.35 });
+
+  document.querySelectorAll('[data-anim]').forEach(function (el) {
+    io.observe(el);
+  });
+
+})();
+</script>
