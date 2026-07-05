@@ -1,0 +1,390 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300..700&display=swap');
+
+/* ── Design tokens scoped — pas de pollution Systeme.io ── */
+.home {
+  --bg:          oklch(0.972 0.005 75);
+  --fg:          oklch(0.18 0.012 55);
+  --card:        oklch(1 0 0);
+  --primary:     oklch(0.508 0.158 47);
+  --primary-fg:  oklch(0.99 0.003 75);
+  --secondary:   oklch(0.935 0.008 75);
+  --muted:       oklch(0.50 0.012 55);
+  --border:      oklch(0.895 0.006 75);
+  --shadow-card: 0 1px 3px 0 oklch(0.18 0.012 55 / 0.04), 0 8px 24px -8px oklch(0.18 0.012 55 / 0.06);
+  --serif:       "Playfair Display", "Times New Roman", Georgia, serif;
+  --sans:        "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --rfull:       9999px;
+  --r4xl:        2rem;
+
+  font-family:  var(--sans);
+  color:        var(--fg);
+  background:   var(--bg);
+  overflow:     hidden;
+  color-scheme: light;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  text-align: left;
+  isolation: isolate;
+}
+.home *, .home *::before, .home *::after { box-sizing: border-box; }
+.home h1, .home h2, .home h3, .home p { margin: 0; }
+.home em { font-style: italic; color: var(--primary); }
+.home a { text-decoration: none; }
+.home button { font-family: var(--sans); }
+
+.home-wrap { max-width: 1160px; margin: 0 auto; }
+.home-pad { padding-left: 72px; padding-right: 72px; }
+
+/* ---- HERO ---- */
+.home-hero { background: var(--fg); overflow: hidden; }
+.home-hero-inner { display: flex; gap: 40px; align-items: center; padding-top: 88px; padding-bottom: 120px; }
+.home-hero-copy { flex: 1; display: flex; flex-direction: column; gap: 24px; position: relative; z-index: 5; }
+.home-hero h1 {
+  font-family: var(--serif); font-size: 56px; line-height: 1.03; font-weight: 500;
+  letter-spacing: -0.022em; text-wrap: balance; color: var(--bg);
+}
+.home-hero-sub { font-size: 18px; line-height: 1.6; color: color-mix(in oklch, var(--bg) 72%, transparent); max-width: 42ch; }
+.home-hero-stage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; min-height: 440px; }
+.home-orb-box { position: relative; width: 100%; height: 440px; display: flex; align-items: center; justify-content: center; }
+.home-orb-btn { border: none; cursor: pointer; background: transparent; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; -webkit-user-select: none; user-select: none; }
+.home-orb {
+  border-radius: 50%;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle at 50% 38%, #fff3c4, #ffd98a 24%, color-mix(in oklch, #ff7a2a, #ffce6b 0%) 60%, #bd521f);
+  box-shadow: 0 0 20px color-mix(in oklch, var(--primary) 40%, transparent);
+  transition: width .14s ease, height .14s ease, background .14s ease, box-shadow .14s ease;
+  flex-shrink: 0;
+}
+
+/* CTA */
+@keyframes home-ctapulse {
+  0%   { box-shadow: 0 12px 30px color-mix(in oklch, var(--primary) 50%, transparent), 0 0 0 0 color-mix(in oklch, var(--primary) 52%, transparent); }
+  70%  { box-shadow: 0 12px 30px color-mix(in oklch, var(--primary) 50%, transparent), 0 0 0 18px color-mix(in oklch, var(--primary) 0%, transparent); }
+  100% { box-shadow: 0 12px 30px color-mix(in oklch, var(--primary) 50%, transparent), 0 0 0 0 color-mix(in oklch, var(--primary) 0%, transparent); }
+}
+.home-cta {
+  display: inline-flex; align-items: center; justify-content: center; gap: 11px;
+  padding: 20px 44px; border-radius: var(--rfull);
+  background: var(--primary); color: var(--primary-fg);
+  font-size: 18px; font-weight: 700; font-family: var(--sans);
+  animation: home-ctapulse 2.4s ease-out infinite; transition: transform .14s ease;
+}
+.home-cta:hover { transform: translateY(-2px) scale(1.02); }
+.home-cta-left { align-self: flex-start; }
+
+/* hand */
+@keyframes home-handtap { 0%,100% { transform: translate(-50%,-16px) scale(1); } 45%,60% { transform: translate(-50%,2px) scale(.88); } }
+@keyframes home-handripple { 0% { transform: translate(-50%,-50%) scale(.3); opacity: .55; } 100% { transform: translate(-50%,-50%) scale(1.8); opacity: 0; } }
+.home-hand { position: absolute; left: 50%; top: 54%; pointer-events: none; z-index: 8; }
+.home-hand .home-ripple { position: absolute; left: 50%; top: 0; width: 52px; height: 52px; border-radius: 50%; border: 2px solid rgba(255,255,255,.75); animation: home-handripple 1.7s ease-out infinite; }
+.home-hand .home-glyph { position: relative; animation: home-handtap 1.7s ease-in-out infinite; filter: drop-shadow(0 4px 7px rgba(0,0,0,.45)); }
+.home-hand.home-hidden { display: none; }
+.home-float {
+  position: absolute; bottom: 54%; transform: translate(-50%,0);
+  font-family: var(--sans); font-size: 15px; font-weight: 800; color: #4a1c06;
+  white-space: nowrap; pointer-events: none; text-shadow: 0 1px 5px rgba(255,232,196,.6);
+  z-index: 6; animation: home-efloatname 1.5s ease-out forwards;
+}
+@keyframes home-efloatname { 0% { opacity: 0; transform: translate(-50%,12px) scale(.8); } 18% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%,-100px) scale(1.14); } }
+
+/* ---- STATS ---- */
+.home-stats { padding-top: 100px; display: grid; grid-template-columns: repeat(3,1fr); gap: 0; }
+.home-stat { padding: 8px 34px; display: flex; flex-direction: column; gap: 8px; }
+.home-stat + .home-stat { border-left: 1px solid var(--border); }
+.home-stat b { font-family: var(--serif); font-size: 56px; line-height: .95; font-weight: 500; color: var(--primary); letter-spacing: -0.03em; }
+.home-stat p { font-size: 15.5px; line-height: 1.45; font-weight: 600; }
+.home-stat small { font-size: 12.5px; color: var(--muted); }
+
+/* ---- SOCIAL PROOF ---- */
+.home-proof { margin-top: 100px; background: var(--secondary); padding-top: 64px; padding-bottom: 64px; }
+.home-proof-inner { display: flex; flex-direction: column; align-items: center; gap: 32px; }
+.home-proof img.home-tp { height: 108px; width: auto; object-fit: contain; }
+.home-reviews { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; width: 100%; }
+.home-review { background: var(--card); border-radius: 20px; padding: 14px; box-shadow: var(--shadow-card); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.home-review img { width: 100%; height: auto; object-fit: contain; border-radius: 10px; }
+.home-proof-q { font-family: var(--serif); font-size: 28px; line-height: 1.25; font-weight: 500; color: var(--fg); text-align: center; max-width: 30ch; }
+
+/* ---- TWO-COL SECTIONS ---- */
+.home-split { padding-top: 120px; display: flex; gap: 56px; align-items: center; }
+.home-split.home-top { align-items: flex-start; }
+.home-col-wide { flex: 1.15; display: flex; flex-direction: column; gap: 6px; }
+.home-col-narrow { flex: .85; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.home-sec-title { font-family: var(--serif); font-size: 38px; line-height: 1.1; font-weight: 500; letter-spacing: -0.018em; margin-bottom: 18px; }
+.home-list { display: flex; flex-direction: column; }
+.home-row { display: flex; gap: 20px; padding: 18px 0; border-top: 1px solid var(--border); }
+.home-list .home-row:last-child { border-bottom: 1px solid var(--border); }
+.home-row .home-num { font-family: var(--serif); font-size: 22px; font-weight: 500; color: var(--primary); flex: none; width: 34px; }
+.home-row p { font-size: 16px; line-height: 1.55; }
+.home-row .home-muted { color: var(--muted); }
+.home-check { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; flex: none; border-radius: 50%; background: color-mix(in oklch, var(--primary) 12%, transparent); color: var(--primary); }
+
+.home-card {
+  background: var(--card); border-radius: var(--r4xl); box-shadow: var(--shadow-card);
+  padding: 40px 34px; display: flex; flex-direction: column; align-items: center; gap: 18px; width: 100%;
+}
+.home-battery { position: relative; height: 74px; border: 3px solid var(--primary); border-radius: 20px; padding: 8px; display: flex; align-items: center; width: 240px; }
+.home-battery .home-fill { height: 100%; border-radius: 11px; transition: width 1.4s cubic-bezier(0.2,0,0,1); }
+.home-battery .home-fill.home-full { background: var(--primary); display: flex; align-items: center; justify-content: flex-end; padding-right: 11px; color: var(--primary-fg); }
+.home-battery .home-fill.home-low { background: color-mix(in oklch, var(--primary) 55%, var(--bg)); }
+.home-bat-tip { width: 8px; height: 28px; background: var(--primary); border-radius: 0 6px 6px 0; }
+.home-card .home-lead { font-family: var(--serif); font-size: 20px; font-weight: 500; color: var(--primary); }
+.home-card .home-desc { font-size: 14px; line-height: 1.6; color: var(--muted); text-align: center; max-width: 30ch; }
+
+.home-story-img { width: 100%; height: auto; border-radius: var(--r4xl); box-shadow: var(--shadow-card); object-fit: cover; }
+.home-story p { font-size: 16.5px; line-height: 1.62; color: var(--muted); }
+.home-story p b { color: var(--fg); font-weight: 600; }
+.home-story p .home-accent { color: var(--primary); font-weight: 600; }
+.home-story .home-pull { font-family: var(--serif); font-style: italic; color: var(--fg); font-size: 26px; line-height: 1.3; }
+
+/* ---- FINAL CTA ---- */
+.home-final { margin-top: 120px; background: var(--fg); padding-top: 80px; padding-bottom: 80px; }
+.home-final-inner { display: flex; gap: 56px; align-items: center; }
+.home-final-copy { flex: 1.1; display: flex; flex-direction: column; gap: 24px; }
+.home-final h2 { font-family: var(--serif); font-size: 42px; line-height: 1.08; font-weight: 500; letter-spacing: -0.02em; color: var(--bg); }
+.home-final p.home-big { font-size: 18px; line-height: 1.6; color: color-mix(in oklch, var(--bg) 75%, transparent); max-width: 42ch; }
+.home-final p.home-big b { color: var(--bg); font-weight: 600; }
+.home-final p.home-big .home-accent { color: var(--primary); font-weight: 600; }
+.home-final .home-whisper { font-family: var(--serif); font-style: italic; font-size: 19px; line-height: 1.4; color: color-mix(in oklch, var(--bg) 60%, transparent); }
+.home-final-stage { flex: .7; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.home-final-stage .home-cap { font-size: 14px; color: color-mix(in oklch, var(--bg) 65%, transparent); }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 860px) {
+  .home-pad { padding-left: 26px; padding-right: 26px; }
+
+  .home-hero-inner { flex-direction: column; align-items: stretch; gap: 22px; padding-top: 44px; padding-bottom: 72px; }
+  .home-hero h1 { font-size: 35px; line-height: 1.05; letter-spacing: -0.02em; }
+  .home-hero-sub { font-size: 15.5px; max-width: none; }
+  .home-hero-stage { min-height: 0; }
+  .home-orb-box { height: 228px; }
+  .home-orb { width: 150px; height: 150px; }
+  .home-cta-left { align-self: stretch; }
+  .home-cta { width: 100%; padding: 17px 28px; font-size: 16px; }
+
+  .home-stats { padding-top: 88px; display: flex; flex-direction: column; gap: 0; }
+  .home-stat { padding: 18px 4px; flex-direction: row; align-items: baseline; gap: 16px; }
+  .home-stat + .home-stat { border-left: none; border-top: 1px solid var(--border); }
+  .home-stat b { font-size: 42px; line-height: .9; flex: none; }
+
+  .home-proof { margin-top: 104px; padding-top: 44px; padding-bottom: 44px; }
+  .home-proof-inner { gap: 22px; }
+  .home-proof img.home-tp { height: 88px; }
+  .home-reviews { grid-template-columns: 1fr; gap: 14px; }
+  .home-review { border-radius: 16px; padding: 12px; }
+  .home-review img { border-radius: 8px; }
+  .home-proof-q { font-size: 22px; line-height: 1.28; }
+
+  .home-split { padding-top: 104px; flex-direction: column; gap: 18px; align-items: stretch; }
+  .home-split.home-reverse { flex-direction: column; }
+  .home-sec-title { font-size: 27px; line-height: 1.12; margin-bottom: 4px; }
+  .home-col-narrow { align-items: stretch; }
+  .home-row { gap: 14px; padding: 15px 0; }
+  .home-row p { font-size: 14.5px; line-height: 1.5; }
+  .home-card { padding: 28px 22px; }
+  .home-battery { width: 200px; height: 60px; }
+  .home-story p { font-size: 15px; line-height: 1.6; }
+  .home-story .home-pull { font-size: 21px; }
+
+  .home-final { margin-top: 104px; padding-top: 48px; padding-bottom: 48px; }
+  .home-final-inner { flex-direction: column-reverse; gap: 22px; text-align: center; align-items: center; }
+  .home-final-copy { align-items: center; }
+  .home-final h2 { font-size: 28px; line-height: 1.1; }
+  .home-final p.home-big { font-size: 15.5px; }
+  .home-final .home-cta { align-self: stretch; }
+}
+</style>
+
+<!-- ═══════════ HTML FRAGMENT ═══════════ -->
+<div class="home">
+
+  <!-- HERO -->
+  <section class="home-hero">
+    <div class="home-wrap home-pad home-hero-inner">
+      <div class="home-hero-copy">
+        <h1>Recharge tes batteries, <em>avant que le corps lâche…</em></h1>
+        <p class="home-hero-sub">Sans perdre de temps, sans culpabiliser, sans compléments.</p>
+        <a href="https://www.gautiergerez.fr/fr-site" class="home-cta home-cta-left">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          Je veux plus d'énergie
+        </a>
+      </div>
+      <div class="home-hero-stage">
+        <div class="home-orb-box" id="rtbOrbBox">
+          <button class="home-orb-btn" id="rtbOrbBtn" aria-label="Recharger l'énergie">
+            <div class="home-orb" id="rtbOrb"></div>
+          </button>
+          <div class="home-hand" id="rtbHand">
+            <div class="home-ripple"></div>
+            <div class="home-glyph"><svg width="52" height="52" viewBox="0 0 24 24" fill="#fff" stroke="#3a1c0a" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12"></path><path d="M11 12V4.5a1.5 1.5 0 0 1 3 0V12"></path><path d="M14 12.5V6a1.5 1.5 0 0 1 3 0v6.5"></path><path d="M17 11.5a1.5 1.5 0 0 1 3 0V16a6 6 0 0 1-6 6h-2a6 6 0 0 1-5.2-3l-2.3-4a1.5 1.5 0 0 1 2.5-1.6L8 12"></path></svg></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="home-wrap home-pad home-stats">
+    <div class="home-stat"><b>76%</b><p>des femmes ressentent de l'épuisement</p><small>Gallup, 2020</small></div>
+    <div class="home-stat"><b>2,5M</b><p>de salariés en burn out sévère en France</p><small>Baromètre Empreinte Humaine, 2022</small></div>
+    <div class="home-stat"><b>+67%</b><p>d'augmentation depuis la covid-19</p><small>Monster, 2021</small></div>
+  </section>
+
+  <!-- SOCIAL PROOF -->
+  <section class="home-proof">
+    <div class="home-wrap home-pad home-proof-inner">
+      <img class="home-tp" src="https://d1yei2z3i6k35z.cloudfront.net/6037979/69413f634fff1_Trustpilot-removebg-preview.png" alt="Trustpilot">
+      <div class="home-reviews">
+        <a class="home-review" href="https://www.gautiergerez.fr/blog/etude-de-cas" target="_blank" rel="noopener"><img src="https://d1yei2z3i6k35z.cloudfront.net/6037979/69ce6d19a0e441.00992135_Capturedécran2026-03-25à14.26.18.png" alt="Avis 5 étoiles de Céline"></a>
+        <a class="home-review" href="https://www.gautiergerez.fr/blog/etude-de-cas" target="_blank" rel="noopener"><img src="https://d1yei2z3i6k35z.cloudfront.net/6037979/69ce6dd735e484.91515252_Capturedécran2026-03-07à17.17.51.png" alt="Avis 5 étoiles de Phénixia"></a>
+        <a class="home-review" href="https://www.gautiergerez.fr/blog/etude-de-cas" target="_blank" rel="noopener"><img src="https://d1yei2z3i6k35z.cloudfront.net/6037979/69ce6d58c676a2.10318785_Capturedécran2026-03-25à14.27.03.png" alt="Avis 5 étoiles de Nathalia"></a>
+      </div>
+      <p class="home-proof-q">Comment elles ont <em>réussi</em> ? Qu'est-ce qu'il <em>faut faire</em> exactement ?</p>
+      <a href="https://www.gautiergerez.fr/fr-site" class="home-cta"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Je veux plus d'énergie</a>
+    </div>
+  </section>
+
+  <!-- 5 SIGNES -->
+  <section class="home-wrap home-pad home-split">
+    <div class="home-col-wide">
+      <h2 class="home-sec-title">5 signes d'épuisement <em>(avant burn out)</em></h2>
+      <div class="home-list">
+        <div class="home-row"><span class="home-num">01</span><p><b>Tu te lèves déjà fatiguée.</b> <span class="home-muted">Le café a ses limites…</span></p></div>
+        <div class="home-row"><span class="home-num">02</span><p><b>Tu vas travailler la boule au ventre.</b> <span class="home-muted">Ton estomac fait plus de nœuds qu'un scout.</span></p></div>
+        <div class="home-row"><span class="home-num">03</span><p><b>Ta to-do list ne finit jamais.</b> <span class="home-muted">Elle se reproduit comme des Gremlins la nuit.</span></p></div>
+        <div class="home-row"><span class="home-num">04</span><p><b>Le soir, tu continues de travailler dans ta tête.</b> <span class="home-muted">Netflix t'aide à te vider l'esprit.</span></p></div>
+        <div class="home-row"><span class="home-num">05</span><p><b>Tu cherches un sens à tout ça.</b> <span class="home-muted">La vie ne peut pas être juste « métro-boulot-série-dodo ».</span></p></div>
+      </div>
+    </div>
+    <div class="home-col-narrow">
+      <div class="home-card">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="home-battery" data-anim="home-sign"><div class="home-fill home-low" style="width:6%;"></div></div>
+          <div class="home-bat-tip"></div>
+        </div>
+        <p class="home-lead">Mode survie.</p>
+        <p class="home-desc">Quand la batterie reste dans le rouge, le corps finit par tirer la sonnette d'alarme.</p>
+      </div>
+      <a href="https://www.gautiergerez.fr/fr-site" class="home-cta"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Je veux plus d'énergie</a>
+    </div>
+  </section>
+
+  <!-- IMAGINE -->
+  <section class="home-wrap home-pad home-split home-reverse">
+    <div class="home-col-narrow">
+      <div class="home-card">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="home-battery" data-anim="home-imag"><div class="home-fill home-full" style="width:8%;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline></svg></div></div>
+          <div class="home-bat-tip"></div>
+        </div>
+        <p class="home-lead">Pleine forme.</p>
+        <p class="home-desc">Une batterie pleine, c'est se lever avec le sourire et tenir jusqu'au soir.</p>
+      </div>
+    </div>
+    <div class="home-col-wide">
+      <h2 class="home-sec-title">Imagine ta vie <em>pleine d'énergie !</em></h2>
+      <div class="home-list">
+        <div class="home-row"><span class="home-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><p><b>Tu te réveilles en forme.</b> <span class="home-muted">Sans appuyer sur « snooze » jusqu'à la dernière minute !</span></p></div>
+        <div class="home-row"><span class="home-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><p><b>Tu attaques le travail avec optimisme.</b> <span class="home-muted">Les problèmes ? Quels problèmes ?</span></p></div>
+        <div class="home-row"><span class="home-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><p><b>Le soir, tu as encore de l'énergie.</b> <span class="home-muted">Assez pour faire des choses que tu aimes.</span></p></div>
+        <div class="home-row"><span class="home-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><p><b>Tu dors paisiblement.</b> <span class="home-muted">Sans compter les moutons ou tes soucis.</span></p></div>
+      </div>
+      <a href="https://www.gautiergerez.fr/fr-site" class="home-cta home-cta-left" style="margin-top:22px;"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Je veux plus d'énergie</a>
+    </div>
+  </section>
+
+  <!-- MON HISTOIRE -->
+  <section class="home-wrap home-pad home-split home-top">
+    <div style="flex:.8; display:flex; flex-direction:column;">
+      <img class="home-story-img" src="https://d1yei2z3i6k35z.cloudfront.net/6037979/683320f562597_06.GautierGerezquijesuicoachburnout.jpg" alt="Gautier Gerez, coach burn out">
+    </div>
+    <div class="home-story" style="flex:1.2; display:flex; flex-direction:column; gap:16px;">
+      <h2 class="home-sec-title" style="margin-bottom:0;">Mon histoire <em>en 2 mots</em></h2>
+      <p>Salut, moi, c'est <b>Gautier</b> ! J'ai 27 ans.</p>
+      <p><b>Entre 15 et 17 ans</b>, j'allais à l'école avec la boule au ventre à cause du harcèlement.</p>
+      <p><b>À 19 ans,</b> fatigue extrême, je passais des journées entières à dormir sans comprendre pourquoi.</p>
+      <p>Je me suis lancé dans la vie active sans savoir <b>où j'allais, ni but, ni passion.</b></p>
+      <p>J'ai cherché dans les livres, formations, podcasts… Et un jour, j'ai découvert <span class="home-accent">LA solution.</span></p>
+      <p class="home-pull">Maintenant, tout a changé !</p>
+      <a href="https://www.gautiergerez.fr/fr-site" class="home-cta home-cta-left" style="margin-top:8px;"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Je veux plus d'énergie</a>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="home-final">
+    <div class="home-wrap home-pad home-final-inner">
+      <div class="home-final-copy">
+        <h2>Retrouve ton énergie <em>dès maintenant !</em></h2>
+        <p class="home-big">Tu mérites <b>mieux</b> que juste survivre chaque jour. Tu n'es qu'à <span class="home-accent">un clic</span> du premier pas.</p>
+        <a href="https://www.gautiergerez.fr/fr-site" class="home-cta home-cta-left"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Je veux plus d'énergie</a>
+        <p class="home-whisper">On ne peut jamais rattraper le temps perdu…</p>
+      </div>
+      <div class="home-final-stage">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="home-battery" data-anim="home-cta" style="width:260px; height:70px; border-radius:18px;"><div class="home-fill home-full" style="width:8%;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline></svg></div></div>
+          <div class="home-bat-tip"></div>
+        </div>
+        <span class="home-cap">Recharge ton énergie, un pas à la fois.</span>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /.home -->
+
+<script>
+(function () {
+  'use strict';
+  var acts = ['Méditation','Marche','Respiration','Sommeil','Yoga','Nature','Étirement','Hydratation','Sieste','Gratitude','Lecture','Cohérence cardiaque'];
+  var orb = document.getElementById('rtbOrb');
+  var orbBtn = document.getElementById('rtbOrbBtn');
+  var orbBox = document.getElementById('rtbOrbBox');
+  var hand = document.getElementById('rtbHand');
+  var energy = 0, fid = 0;
+  var isMobile = function () { return window.matchMedia('(max-width: 860px)').matches; };
+
+  function warm(t) { return 'color-mix(in oklch, #ff7a2a, #ffce6b ' + Math.round(t * 100) + '%)'; }
+
+  function render() {
+    var k = energy / 100;
+    var base = isMobile() ? 150 : 200;
+    var span = isMobile() ? 320 : 480;
+    var size = base + k * span;
+    orb.style.width = size + 'px';
+    orb.style.height = size + 'px';
+    orb.style.background = 'radial-gradient(circle at 50% 38%, #fff3c4, #ffd98a 24%, ' + warm(k) + ' 60%, #bd521f)';
+    orb.style.boxShadow = '0 0 ' + (20 + k * 74) + 'px color-mix(in oklch, var(--primary) ' + Math.round(40 + k * 40) + '%, transparent)';
+    hand.classList.toggle('home-hidden', energy >= 12);
+  }
+
+  function tap() {
+    energy = Math.min(100, energy + 10);
+    var name = acts[fid % acts.length]; fid++;
+    var el = document.createElement('span');
+    el.className = 'home-float';
+    el.textContent = name;
+    el.style.left = 'calc(50% + ' + Math.round(Math.random() * 110 - 55) + 'px)';
+    orbBox.appendChild(el);
+    setTimeout(function () { el.remove(); }, 1500);
+    render();
+  }
+
+  orbBtn.addEventListener('click', tap);
+  setInterval(function () { if (energy > 0) { energy = Math.max(0, energy - 5); render(); } }, 850);
+  window.addEventListener('resize', render);
+  render();
+
+  // battery fills animate in on scroll
+  var targets = { 'home-sign': '13%', 'home-imag': '100%', 'home-cta': '94%' };
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var b = e.target;
+      var key = b.getAttribute('data-anim');
+      var fill = b.querySelector('.home-fill');
+      fill.style.width = targets[key] || '90%';
+      io.unobserve(b);
+    });
+  }, { threshold: 0.35 });
+  document.querySelectorAll('[data-anim]').forEach(function (b) { io.observe(b); });
+})();
+</script>
