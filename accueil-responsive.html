@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recharge tes batteries — Gautier Gerez</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300..700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --background: oklch(0.972 0.005 75);
+    --foreground: oklch(0.18 0.012 55);
+    --card: oklch(1 0 0);
+    --primary: oklch(0.508 0.158 47);
+    --primary-foreground: oklch(0.99 0.003 75);
+    --secondary: oklch(0.935 0.008 75);
+    --muted-foreground: oklch(0.50 0.012 55);
+    --border: oklch(0.895 0.006 75);
+    --radius-full: 9999px;
+    --radius-4xl: 2rem;
+    --shadow-card: 0 1px 3px 0 oklch(0.18 0.012 55 / 0.04), 0 8px 24px -8px oklch(0.18 0.012 55 / 0.06);
+    --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-serif: "Playfair Display", "Times New Roman", Georgia, serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, p { margin: 0; }
+  em { font-style: italic; color: var(--primary); }
+  a { text-decoration: none; color: inherit; }
+
+  .wrap { max-width: 1160px; margin: 0 auto; }
+  .pad { padding-left: 72px; padding-right: 72px; }
+
+  /* ---- HERO ---- */
+  .hero {
+    background: var(--foreground);
+    overflow: hidden;
+  }
+  .hero-inner {
+    display: flex; gap: 40px; align-items: center;
+    padding-top: 88px; padding-bottom: 120px;
+  }
+  .hero-copy { flex: 1; display: flex; flex-direction: column; gap: 24px; position: relative; z-index: 5; }
+  .hero h1 {
+    font-family: var(--font-serif); font-size: 56px; line-height: 1.03; font-weight: 500;
+    letter-spacing: -0.022em; text-wrap: balance; color: var(--background);
+  }
+  .hero-sub { font-size: 18px; line-height: 1.6; color: color-mix(in oklch, var(--background) 72%, transparent); max-width: 42ch; }
+  .hero-stage {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    position: relative; min-height: 440px;
+  }
+  .orb-box { position: relative; width: 100%; height: 440px; display: flex; align-items: center; justify-content: center; }
+  .orb-btn { border: none; cursor: pointer; background: transparent; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; -webkit-user-select: none; user-select: none; }
+  .orb {
+    border-radius: 50%;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle at 50% 38%, #fff3c4, #ffd98a 24%, color-mix(in oklch, #ff7a2a, #ffce6b 0%) 60%, #bd521f);
+    box-shadow: 0 0 20px color-mix(in oklch, var(--primary) 40%, transparent);
+    transition: width .14s ease, height .14s ease, background .14s ease, box-shadow .14s ease;
+  }
+
+  /* CTA */
+  @keyframes ctapulse {
+    0%   { box-shadow: 0 12px 30px color-mix(in oklch, var(--primary) 50%, transparent), 0 0 0 0 color-mix(in oklch, var(--primary) 52%, transparent); }
+    70%  { box-shadow: 0 12px 30px color-mix(in oklch, var(--primary) 50%, transparent), 0 0 0 18px color-mix(in oklch, var(--primary) 0%, transparent); }
+    100% { box-shadow: 0 12px 30px color-mix(in oklch, var(--primary) 50%, transparent), 0 0 0 0 color-mix(in oklch, var(--primary) 0%, transparent); }
+  }
+  .cta {
+    display: inline-flex; align-items: center; justify-content: center; gap: 11px;
+    padding: 20px 44px; border-radius: var(--radius-full);
+    background: var(--primary); color: var(--primary-foreground);
+    font-size: 18px; font-weight: 700; font-family: var(--font-sans);
+    animation: ctapulse 2.4s ease-out infinite; transition: transform .14s ease;
+  }
+  .cta:hover { transform: translateY(-2px) scale(1.02); }
+  .cta-left { align-self: flex-start; }
+
+  /* hand */
+  @keyframes handtap { 0%,100% { transform: translate(-50%,-16px) scale(1); } 45%,60% { transform: translate(-50%,2px) scale(.88); } }
+  @keyframes handripple { 0% { transform: translate(-50%,-50%) scale(.3); opacity: .55; } 100% { transform: translate(-50%,-50%) scale(1.8); opacity: 0; } }
+  .hand { position: absolute; left: 50%; top: 54%; pointer-events: none; z-index: 8; }
+  .hand .ripple { position: absolute; left: 50%; top: 0; width: 52px; height: 52px; border-radius: 50%; border: 2px solid rgba(255,255,255,.75); animation: handripple 1.7s ease-out infinite; }
+  .hand .glyph { position: relative; animation: handtap 1.7s ease-in-out infinite; filter: drop-shadow(0 4px 7px rgba(0,0,0,.45)); }
+  .hand.hidden { display: none; }
+  .float {
+    position: absolute; bottom: 54%; transform: translate(-50%,0);
+    font-family: var(--font-sans); font-size: 15px; font-weight: 800; color: #4a1c06;
+    white-space: nowrap; pointer-events: none; text-shadow: 0 1px 5px rgba(255,232,196,.6);
+    z-index: 6; animation: efloatname 1.5s ease-out forwards;
+  }
+  @keyframes efloatname { 0% { opacity: 0; transform: translate(-50%,12px) scale(.8); } 18% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%,-100px) scale(1.14); } }
+
+  /* ---- STATS ---- */
+  .stats { padding-top: 100px; display: grid; grid-template-columns: repeat(3,1fr); gap: 0; }
+  .stat { padding: 8px 34px; display: flex; flex-direction: column; gap: 8px; }
+  .stat + .stat { border-left: 1px solid var(--border); }
+  .stat b { font-family: var(--font-serif); font-size: 56px; line-height: .95; font-weight: 500; color: var(--primary); letter-spacing: -0.03em; }
+  .stat p { font-size: 15.5px; line-height: 1.45; font-weight: 600; }
+  .stat small { font-size: 12.5px; color: var(--muted-foreground); }
+
+  /* ---- SOCIAL PROOF ---- */
+  .proof { margin-top: 100px; background: var(--secondary); padding-top: 64px; padding-bottom: 64px; }
+  .proof-inner { display: flex; flex-direction: column; align-items: center; gap: 32px; }
+  .proof img.tp { height: 108px; width: auto; object-fit: contain; }
+  .reviews { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; width: 100%; }
+  .review { background: var(--card); border-radius: 20px; padding: 14px; box-shadow: var(--shadow-card); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .review img { width: 100%; height: auto; object-fit: contain; border-radius: 10px; }
+  .proof-q { font-family: var(--font-serif); font-size: 28px; line-height: 1.25; font-weight: 500; color: var(--foreground); text-align: center; max-width: 30ch; }
+
+  /* ---- TWO-COL SECTIONS ---- */
+  .split { padding-top: 120px; display: flex; gap: 56px; align-items: center; }
+  .split.top { align-items: flex-start; }
+  .col-wide { flex: 1.15; display: flex; flex-direction: column; gap: 6px; }
+  .col-narrow { flex: .85; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+  .sec-title { font-family: var(--font-serif); font-size: 38px; line-height: 1.1; font-weight: 500; letter-spacing: -0.018em; margin-bottom: 18px; }
+  .list { display: flex; flex-direction: column; }
+  .row { display: flex; gap: 20px; padding: 18px 0; border-top: 1px solid var(--border); }
+  .list .row:last-child { border-bottom: 1px solid var(--border); }
+  .row .num { font-family: var(--font-serif); font-size: 22px; font-weight: 500; color: var(--primary); flex: none; width: 34px; }
+  .row p { font-size: 16px; line-height: 1.55; }
+  .row .muted { color: var(--muted-foreground); }
+  .check { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; flex: none; border-radius: 50%; background: color-mix(in oklch, var(--primary) 12%, transparent); color: var(--primary); }
+
+  .card {
+    background: var(--card); border-radius: var(--radius-4xl); box-shadow: var(--shadow-card);
+    padding: 40px 34px; display: flex; flex-direction: column; align-items: center; gap: 18px; width: 100%;
+  }
+  .battery { position: relative; height: 74px; border: 3px solid var(--primary); border-radius: 20px; padding: 8px; display: flex; align-items: center; width: 240px; }
+  .battery .fill { height: 100%; border-radius: 11px; transition: width 1.4s cubic-bezier(0.2,0,0,1); }
+  .battery .fill.full { background: var(--primary); display: flex; align-items: center; justify-content: flex-end; padding-right: 11px; color: var(--primary-foreground); }
+  .battery .fill.low { background: color-mix(in oklch, var(--primary) 55%, var(--background)); }
+  .bat-tip { width: 8px; height: 28px; background: var(--primary); border-radius: 0 6px 6px 0; }
+  .card .lead { font-family: var(--font-serif); font-size: 20px; font-weight: 500; color: var(--primary); }
+  .card .desc { font-size: 14px; line-height: 1.6; color: var(--muted-foreground); text-align: center; max-width: 30ch; }
+
+  .story-img { width: 100%; height: auto; border-radius: var(--radius-4xl); box-shadow: var(--shadow-card); object-fit: cover; }
+  .story p { font-size: 16.5px; line-height: 1.62; color: var(--muted-foreground); }
+  .story p b { color: var(--foreground); font-weight: 600; }
+  .story p .accent { color: var(--primary); font-weight: 600; }
+  .story .pull { font-family: var(--font-serif); font-style: italic; color: var(--foreground); font-size: 26px; line-height: 1.3; }
+
+  /* ---- FINAL CTA ---- */
+  .final { margin-top: 120px; background: var(--foreground); padding-top: 80px; padding-bottom: 80px; }
+  .final-inner { display: flex; gap: 56px; align-items: center; }
+  .final-copy { flex: 1.1; display: flex; flex-direction: column; gap: 24px; }
+  .final h2 { font-family: var(--font-serif); font-size: 42px; line-height: 1.08; font-weight: 500; letter-spacing: -0.02em; color: var(--background); }
+  .final p.big { font-size: 18px; line-height: 1.6; color: color-mix(in oklch, var(--background) 75%, transparent); max-width: 42ch; }
+  .final p.big b { color: var(--background); font-weight: 600; }
+  .final p.big .accent { color: var(--primary); font-weight: 600; }
+  .final .whisper { font-family: var(--font-serif); font-style: italic; font-size: 19px; line-height: 1.4; color: color-mix(in oklch, var(--background) 60%, transparent); }
+  .final-stage { flex: .7; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .final-stage .cap { font-size: 14px; color: color-mix(in oklch, var(--background) 65%, transparent); }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 860px) {
+    .pad { padding-left: 26px; padding-right: 26px; }
+
+    .hero-inner { flex-direction: column; align-items: stretch; gap: 22px; padding-top: 44px; padding-bottom: 72px; }
+    .hero h1 { font-size: 35px; line-height: 1.05; letter-spacing: -0.02em; }
+    .hero-sub { font-size: 15.5px; max-width: none; }
+    .hero-stage { min-height: 0; }
+    .orb-box { height: 228px; }
+    .orb { width: 150px; height: 150px; }
+    .cta-left { align-self: stretch; }
+    .cta { width: 100%; padding: 17px 28px; font-size: 16px; }
+
+    .stats { padding-top: 88px; display: flex; flex-direction: column; gap: 0; }
+    .stat { padding: 18px 4px; flex-direction: row; align-items: baseline; gap: 16px; }
+    .stat + .stat { border-left: none; border-top: 1px solid var(--border); }
+    .stat b { font-size: 42px; line-height: .9; flex: none; }
+
+    .proof { margin-top: 104px; padding-top: 44px; padding-bottom: 44px; }
+    .proof-inner { gap: 22px; }
+    .proof img.tp { height: 88px; }
+    .reviews { grid-template-columns: 1fr; gap: 14px; }
+    .review { border-radius: 16px; padding: 12px; }
+    .review img { border-radius: 8px; }
+    .proof-q { font-size: 22px; line-height: 1.28; }
+
+    .split { padding-top: 104px; flex-direction: column; gap: 18px; align-items: stretch; }
+    .split.reverse { flex-direction: column; }
+    .sec-title { font-size: 27px; line-height: 1.12; margin-bottom: 4px; }
+    .col-narrow { align-items: stretch; }
+    .row { gap: 14px; padding: 15px 0; }
+    .row p { font-size: 14.5px; line-height: 1.5; }
+    .card { padding: 28px 22px; }
+    .battery { width: 200px; height: 60px; }
+    .story p { font-size: 15px; line-height: 1.6; }
+    .story .pull { font-size: 21px; }
+
+    .final { margin-top: 104px; padding-top: 48px; padding-bottom: 48px; }
+    .final-inner { flex-direction: column-reverse; gap: 22px; text-align: center; align-items: center; }
+    .final-copy { align-items: center; }
+    .final h2 { font-size: 28px; line-height: 1.1; }
+    .final p.big { font-size: 15.5px; }
+    .final .cta { align-self: stretch; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap pad hero-inner">
+      <div class="hero-copy">
+        <h1>Recharge tes batteries, <em>avant que le corps lâche…</em></h1>
+        <p class="hero-sub">Sans perdre de temps, sans culpabiliser, sans compléments.</p>
+        <a href="https://www.gautiergerez.fr/fr-site" target="_blank" rel="noopener" class="cta cta-left">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          Je veux plus d'énergie
+        </a>
+      </div>
+      <div class="hero-stage">
+        <div class="orb-box" id="orbBox">
+          <button class="orb-btn" id="orbBtn" aria-label="Recharger l'énergie">
+            <div class="orb" id="orb"></div>
+          </button>
+          <div class="hand" id="hand">
+            <div class="ripple"></div>
+            <div class="glyph"><svg width="52" height="52" viewBox="0 0 24 24" fill="#fff" stroke="#3a1c0a" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12"></path><path d="M11 12V4.5a1.5 1.5 0 0 1 3 0V12"></path><path d="M14 12.5V6a1.5 1.5 0 0 1 3 0v6.5"></path><path d="M17 11.5a1.5 1.5 0 0 1 3 0V16a6 6 0 0 1-6 6h-2a6 6 0 0 1-5.2-3l-2.3-4a1.5 1.5 0 0 1 2.5-1.6L8 12"></path></svg></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="wrap pad stats">
+    <div class="stat"><b>76%</b><p>des femmes ressentent de l'épuisement</p><small>Gallup, 2020</small></div>
+    <div class="stat"><b>2,5M</b><p>de salariés en burn out sévère en France</p><small>Baromètre Empreinte Humaine, 2022</small></div>
+    <div class="stat"><b>+67%</b><p>d'augmentation depuis la covid-19</p><small>Monster, 2021</small></div>
+  </section>
+
+  <!-- SOCIAL PROOF -->
+  <section class="proof">
+    <div class="wrap pad proof-inner">
+      <img class="tp" src="https://d1yei2z3i6k35z.cloudfront.net/6037979/69413f634fff1_Trustpilot-removebg-preview.png" alt="Trustpilot">
+      <div class="reviews">
+        <a class="review" href="https://www.gautiergerez.fr/blog/etude-de-cas" target="_blank" rel="noopener"><img src="https://d1yei2z3i6k35z.cloudfront.net/6037979/69ce6d19a0e441.00992135_Capturedécran2026-03-25à14.26.18.png" alt="Avis 5 étoiles de Céline"></a>
+        <a class="review" href="https://www.gautiergerez.fr/blog/etude-de-cas" target="_blank" rel="noopener"><img src="https://d1yei2z3i6k35z.cloudfront.net/6037979/69ce6dd735e484.91515252_Capturedécran2026-03-07à17.17.51.png" alt="Avis 5 étoiles de Phénixia"></a>
+        <a class="review" href="https://www.gautiergerez.fr/blog/etude-de-cas" target="_blank" rel="noopener"><img src="https://d1yei2z3i6k35z.cloudfront.net/6037979/69ce6d58c676a2.10318785_Capturedécran2026-03-25à14.27.03.png" alt="Avis 5 étoiles de Nathalia"></a>
+      </div>
+      <p class="proof-q">Comment elles ont <em>réussi</em> ? Qu'est-ce qu'il <em>faut faire</em> exactement ?</p>
+      <a href="https://www.gautiergerez.fr/fr-site" target="_blank" rel="noopener" class="cta"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Je veux plus d'énergie</a>
+    </div>
+  </section>
+
+  <!-- 5 SIGNES -->
+  <section class="wrap pad split">
+    <div class="col-wide">
+      <h2 class="sec-title">5 signes d'épuisement <em>(avant burn out)</em></h2>
+      <div class="list">
+        <div class="row"><span class="num">01</span><p><b>Tu te lèves déjà fatiguée.</b> <span class="muted">Le café a ses limites…</span></p></div>
+        <div class="row"><span class="num">02</span><p><b>Tu vas travailler la boule au ventre.</b> <span class="muted">Ton estomac fait plus de nœuds qu'un scout.</span></p></div>
+        <div class="row"><span class="num">03</span><p><b>Ta to-do list ne finit jamais.</b> <span class="muted">Elle se reproduit comme des Gremlins la nuit.</span></p></div>
+        <div class="row"><span class="num">04</span><p><b>Le soir, tu continues de travailler dans ta tête.</b> <span class="muted">Netflix t'aide à te vider l'esprit.</span></p></div>
+        <div class="row"><span class="num">05</span><p><b>Tu cherches un sens à tout ça.</b> <span class="muted">La vie ne peut pas être juste « métro-boulot-série-dodo ».</span></p></div>
+      </div>
+    </div>
+    <div class="col-narrow">
+      <div class="card">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="battery" data-anim="sign"><div class="fill low" style="width:6%;"></div></div>
+          <div class="bat-tip"></div>
+        </div>
+        <p class="lead">Mode survie.</p>
+        <p class="desc">Quand la batterie reste dans le rouge, le corps finit par tirer la sonnette d'alarme.</p>
+      </div>
+      <a href="https://www.gautiergerez.fr/fr-site" target="_blank" rel="noopener" class="cta"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Je veux plus d'énergie</a>
+    </div>
+  </section>
+
+  <!-- IMAGINE -->
+  <section class="wrap pad split reverse">
+    <div class="col-narrow">
+      <div class="card">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="battery" data-anim="imag"><div class="fill full" style="width:8%;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline></svg></div></div>
+          <div class="bat-tip"></div>
+        </div>
+        <p class="lead">Pleine forme.</p>
+        <p class="desc">Une batterie pleine, c'est se lever avec le sourire et tenir jusqu'au soir.</p>
+      </div>
+    </div>
+    <div class="col-wide">
+      <h2 class="sec-title">Imagine ta vie <em>pleine d'énergie !</em></h2>
+      <div class="list">
+        <div class="row"><span class="check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><p><b>Tu te réveilles en forme.</b> <span class="muted">Sans appuyer sur « snooze » jusqu'à la dernière minute !</span></p></div>
+        <div class="row"><span class="check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><p><b>Tu attaques le travail avec optimisme.</b> <span class="muted">Les problèmes ? Quels problèmes ?</span></p></div>
+        <div class="row"><span class="check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><p><b>Le soir, tu as encore de l'énergie.</b> <span class="muted">Assez pour faire des choses que tu aimes.</span></p></div>
+        <div class="row"><span class="check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><p><b>Tu dors paisiblement.</b> <span class="muted">Sans compter les moutons ou tes soucis.</span></p></div>
+      </div>
+      <a href="https://www.gautiergerez.fr/fr-site" target="_blank" rel="noopener" class="cta cta-left" style="margin-top:22px;"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Je veux plus d'énergie</a>
+    </div>
+  </section>
+
+  <!-- MON HISTOIRE -->
+  <section class="wrap pad split top">
+    <div style="flex:.8; display:flex; flex-direction:column;">
+      <img class="story-img" src="https://d1yei2z3i6k35z.cloudfront.net/6037979/683320f562597_06.GautierGerezquijesuicoachburnout.jpg" alt="Gautier Gerez, coach burn out">
+    </div>
+    <div class="story" style="flex:1.2; display:flex; flex-direction:column; gap:16px;">
+      <h2 class="sec-title" style="margin-bottom:0;">Mon histoire <em>en 2 mots</em></h2>
+      <p>Salut, moi, c'est <b>Gautier</b> ! J'ai 27 ans.</p>
+      <p><b>Entre 15 et 17 ans</b>, j'allais à l'école avec la boule au ventre à cause du harcèlement.</p>
+      <p><b>À 19 ans,</b> fatigue extrême, je passais des journées entières à dormir sans comprendre pourquoi.</p>
+      <p>Je me suis lancé dans la vie active sans savoir <b>où j'allais, ni but, ni passion.</b></p>
+      <p>J'ai cherché dans les livres, formations, podcasts… Et un jour, j'ai découvert <span class="accent">LA solution.</span></p>
+      <p class="pull">Maintenant, tout a changé !</p>
+      <a href="https://www.gautiergerez.fr/fr-site" target="_blank" rel="noopener" class="cta cta-left" style="margin-top:8px;"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Je veux plus d'énergie</a>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final">
+    <div class="wrap pad final-inner">
+      <div class="final-copy">
+        <h2>Retrouve ton énergie <em>dès maintenant !</em></h2>
+        <p class="big">Tu mérites <b>mieux</b> que juste survivre chaque jour. Tu n'es qu'à <span class="accent">un clic</span> du premier pas.</p>
+        <a href="https://www.gautiergerez.fr/fr-site" target="_blank" rel="noopener" class="cta cta-left"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Je veux plus d'énergie</a>
+        <p class="whisper">On ne peut jamais rattraper le temps perdu…</p>
+      </div>
+      <div class="final-stage">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="battery" data-anim="cta" style="width:260px; height:70px; border-radius:18px;"><div class="fill full" style="width:8%;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline></svg></div></div>
+          <div class="bat-tip"></div>
+        </div>
+        <span class="cap">Recharge ton énergie, un pas à la fois.</span>
+      </div>
+    </div>
+  </section>
+
+<script>
+(function () {
+  var acts = ['Méditation','Marche','Respiration','Sommeil','Yoga','Nature','Étirement','Hydratation','Sieste','Gratitude','Lecture','Cohérence cardiaque'];
+  var orb = document.getElementById('orb');
+  var orbBtn = document.getElementById('orbBtn');
+  var orbBox = document.getElementById('orbBox');
+  var hand = document.getElementById('hand');
+  var energy = 0, fid = 0;
+  var isMobile = function () { return window.matchMedia('(max-width: 860px)').matches; };
+
+  function warm(t) { return 'color-mix(in oklch, #ff7a2a, #ffce6b ' + Math.round(t * 100) + '%)'; }
+
+  function render() {
+    var k = energy / 100;
+    var base = isMobile() ? 150 : 200;
+    var span = isMobile() ? 320 : 480;
+    var size = base + k * span;
+    orb.style.width = size + 'px';
+    orb.style.height = size + 'px';
+    orb.style.background = 'radial-gradient(circle at 50% 38%, #fff3c4, #ffd98a 24%, ' + warm(k) + ' 60%, #bd521f)';
+    orb.style.boxShadow = '0 0 ' + (20 + k * 74) + 'px color-mix(in oklch, var(--primary) ' + Math.round(40 + k * 40) + '%, transparent)';
+    hand.classList.toggle('hidden', energy >= 12);
+  }
+
+  function tap() {
+    energy = Math.min(100, energy + 10);
+    var name = acts[fid % acts.length]; fid++;
+    var el = document.createElement('span');
+    el.className = 'float';
+    el.textContent = name;
+    el.style.left = 'calc(50% + ' + Math.round(Math.random() * 110 - 55) + 'px)';
+    orbBox.appendChild(el);
+    setTimeout(function () { el.remove(); }, 1500);
+    render();
+  }
+
+  orbBtn.addEventListener('click', tap);
+  setInterval(function () { if (energy > 0) { energy = Math.max(0, energy - 5); render(); } }, 850);
+  window.addEventListener('resize', render);
+  render();
+
+  // battery fills animate in on scroll
+  var targets = { sign: '13%', imag: '100%', cta: '94%' };
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var b = e.target;
+      var key = b.getAttribute('data-anim');
+      var fill = b.querySelector('.fill');
+      fill.style.width = targets[key] || '90%';
+      io.unobserve(b);
+    });
+  }, { threshold: 0.35 });
+  document.querySelectorAll('[data-anim]').forEach(function (b) { io.observe(b); });
+})();
+</script>
+</body>
+</html>
